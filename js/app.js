@@ -44,6 +44,7 @@ let weeklyChart = null;
 let rainDonutChart = null;
 let tempComfortChart = null;
 let humidityGaugeChart = null;
+let lastInsightText = "";
 
 // ==============================
 // INIT (ONLY ONE DOMContentLoaded)
@@ -68,6 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const city = searchInput.value.trim();
       if (city) fetchWeather(city);
     }
+  });
+
+  document.querySelectorAll(".small-card").forEach((card) => {
+    observer.observe(card);
   });
 
   // USE CURRENT LOCATION FIRST
@@ -165,11 +170,11 @@ function updateHero(data) {
   updateHeroBackground(weatherMain, weatherIcon, pop);
 
   // 📍 City
-  document.getElementById(
-    "cityName"
-  ).innerText = `📍 ${data.city.name}, ${data.city.country}`;
+  document.getElementById("cityName").innerHTML = `
+  <i class="bi bi-geo-alt-fill"></i>
+  <span>${data.city.name}, ${data.city.country}</span>
+`;
 }
-
 
 // ==============================
 // TODAY CARDS
@@ -230,6 +235,7 @@ function updateCharts(data) {
   updateRainDonut(data);
   updateTempComfortChart(data);
   updateHumidityGauge(data);
+  updateComfortAI(data);
 }
 
 // ==============================
@@ -539,7 +545,6 @@ function updateHumidityGauge(data) {
   });
 }
 
-
 function getGreetingByTime(date = new Date()) {
   const hour = date.getHours();
 
@@ -547,4 +552,132 @@ function getGreetingByTime(date = new Date()) {
   if (hour >= 12 && hour < 17) return "Good Afternoon";
   if (hour >= 17 && hour < 21) return "Good Evening";
   return "Good Night";
+}
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("chart-visible");
+      }
+    });
+  },
+  { threshold: 0.2 }
+);
+
+function updateComfortAI(data) {
+  const current = data.list[0];
+
+  const temp = current.main.temp;
+  const humidity = current.main.humidity;
+  const wind = current.wind.speed;
+  const rain = (current.pop || 0) * 100;
+
+  // =====================
+  // SCORE CALCULATION
+  // =====================
+  let score = 100;
+
+  if (temp < 18 || temp > 32) score -= 20;
+  else if (temp < 20 || temp > 30) score -= 10;
+
+  if (humidity > 80 || humidity < 30) score -= 15;
+  else if (humidity > 65) score -= 8;
+
+  if (rain > 60) score -= 25;
+  else if (rain > 30) score -= 15;
+
+  if (wind > 20) score -= 10;
+
+  score = Math.max(0, Math.round(score));
+
+  // =====================
+  // LABEL + COLOR
+  // =====================
+  let label = "Comfortable";
+  let colorClass = "score-mid";
+
+  if (score >= 85) {
+    label = "Excellent";
+    colorClass = "score-good";
+  } else if (score >= 70) {
+    label = "Very Comfortable";
+    colorClass = "score-good";
+  } else if (score >= 50) {
+    label = "Moderate";
+    colorClass = "score-mid";
+  } else {
+    label = "Uncomfortable";
+    colorClass = "score-bad";
+  }
+
+  // =====================
+  // AI INSIGHT
+  // =====================
+  let insight = "";
+
+  if (score >= 85) {
+    insight = "Near-perfect weather today. Ideal for outdoor activities.";
+  } else if (rain > 40) {
+    insight = "Rain is likely today, which may affect outdoor plans.";
+  } else if (humidity > 70) {
+    insight = "High humidity may make the weather feel warmer.";
+  } else if (wind > 15) {
+    insight = "Breezy conditions could feel refreshing during the day.";
+  } else {
+    insight = "Weather conditions are stable with minimal discomfort.";
+  }
+
+  lastInsightText = insight;
+
+  // =====================
+  // BEST TIME TODAY
+  // =====================
+  const bestHour = data.list
+    .slice(0, 8)
+    .sort((a, b) => a.main.temp - b.main.temp)[0];
+
+  const bestTime = new Date(bestHour.dt * 1000).getHours() + ":00";
+
+  document.getElementById("bestTime").innerText =
+    `Best time to go out: ${bestTime}`;
+
+  // =====================
+  // UPDATE UI
+  // =====================
+  animateScore(score, colorClass);
+  document.getElementById("comfortLabel").innerText = label;
+  document.getElementById("aiInsight").innerText = insight;
+}
+
+function animateScore(target, colorClass) {
+  const el = document.getElementById("comfortScore");
+  const wrap = document.getElementById("comfortScoreWrap");
+
+  wrap.classList.remove("score-good", "score-mid", "score-bad");
+  wrap.classList.add(colorClass);
+
+  let current = 0;
+  const step = Math.max(1, Math.floor(target / 40));
+
+  const interval = setInterval(() => {
+    current += step;
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+    el.innerText = current;
+  }, 20);
+}
+
+function speakInsight() {
+  if (!lastInsightText) return;
+
+  const speech = new SpeechSynthesisUtterance(lastInsightText);
+  speech.lang = "en-US";
+  speech.rate = 0.95;
+  speech.pitch = 1;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
 }

@@ -2,6 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
     <title>SkySense Weather</title>
 
     <!-- Bootstrap -->
@@ -54,7 +59,10 @@
               <p id="date">---</p>
               <p class="sub" id="heroSub">---</p>
             </div>
-            <div class="location" id="cityName">📍 City</div>
+            <div class="location" id="cityName">
+              <i class="bi bi-geo-alt-fill"></i>
+              <span>City</span>
+            </div>
           </div>
 
           <!-- SCROLLABLE CONTENT -->
@@ -121,6 +129,27 @@
             <div class="card white small-card">
               <h6>Weekly Temperature</h6>
               <canvas id="weeklyTemp"></canvas>
+            </div>
+
+            <div class="card white small-card comfort-ai">
+              <h6>Weather Comfort Score</h6>
+
+              <div class="comfort-score" id="comfortScoreWrap">
+                <span id="comfortScore">0</span>
+                <small>/ 100</small>
+              </div>
+
+              <div class="comfort-label" id="comfortLabel">---</div>
+
+              <p class="ai-insight" id="aiInsight">
+                Analyzing today’s weather conditions...
+              </p>
+
+              <div class="best-time" id="bestTime">---</div>
+
+              <button class="voice-btn" onclick="speakInsight()">
+                <i class="bi bi-volume-up"></i> Listen
+              </button>
             </div>
           </div>
         </div>
