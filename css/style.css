@@ -1,0 +1,593 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #4b5563;
+  height: 100vh;
+}
+
+.app {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: #f9fafb;
+  overflow: hidden;
+}
+
+/* LEFT */
+.left {
+  width: 100%;
+  padding: 25px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* HERO */
+.hero-card {
+  height: 220px;
+  border-radius: 20px;
+  color: white;
+  padding: 30px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.6s ease;
+}
+
+/* 🌞 Clear */
+.hero-clear {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.35), rgba(0,0,0,.35)),
+    url("https://cdn.pixabay.com/photo/2018/08/06/22/55/sun-3588618_1280.jpg");
+}
+
+/* ☁️ Clouds */
+.hero-clouds {
+  background-image:
+    linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+    url("https://media.istockphoto.com/id/182175143/photo/photo-of-some-white-whispy-clouds-and-blue-sky-cloudscape.jpg?s=612x612&w=0&k=20&c=4pM1uET260cVlZooulBBBjST9Cx-uzKwBNNYyn3AN_k=");
+}
+
+/* 🌧 Rain */
+.hero-rain {
+  background-image:
+    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+    url("https://media.istockphoto.com/id/1257951336/photo/transparent-umbrella-under-rain-against-water-drops-splash-background-rainy-weather-concept.jpg?s=612x612&w=0&k=20&c=lNvbIw1wReb-owe7_rMgW8lZz1zElqs5BOY1AZhyRXs=");
+}
+
+/* ⛈ Thunderstorm */
+.hero-thunderstorm {
+  background-image:
+    linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+    url("https://media.istockphoto.com/id/517643357/photo/thunderstorm-lightning-with-dark-cloudy-sky.jpg?s=612x612&w=0&k=20&c=x3G3UijRPVGFMFExnlYGbnQtnlH6-oUoMU48BTkc0Os=");
+}
+
+/* ❄ Snow */
+.hero-snow {
+  background-image:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)),
+    url("https://images.ctfassets.net/hrltx12pl8hq/5thrWp3Se4mcffFgMORIds/9013edc6afcdfe220a7334eb49d81b9d/snow-images.jpg?fit=fill&w=1200&h=630");
+}
+
+/* 🌫 Mist / Fog */
+.hero-mist {
+  background-image:
+    linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)),
+    url("https://images.pexels.com/photos/167699/pexels-photo-167699.jpeg?cs=srgb&dl=pexels-lum3n-44775-167699.jpg&fm=jpg");
+}
+
+/* 🌙 Night fallback */
+.hero-night {
+  background-image:
+    linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+    url("https://t4.ftcdn.net/jpg/02/98/13/93/360_F_298139354_B8MchbDhUhOuAfcewRxZ9AUOKV9vsWAt.jpg");
+}
+
+.hero-text h1 {
+  font-size: 52px;
+  font-weight: bold;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.hero-meta i {
+  font-size: 20px;
+}
+
+
+.location {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* CARDS */
+.card.white {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* RIGHT */
+.right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 360px;
+  background: linear-gradient(180deg, #0f172a, #020617);
+  color: white;
+  padding: 25px;
+
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.current {
+  text-align: center;
+}
+
+.current .icon {
+  width: 80px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.forecast {
+  margin-top: 30px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.tabs button {
+  background: #1e293b;
+  border: none;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.tabs .active {
+  background: #2563eb;
+}
+
+.day {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.map {
+  width: 100%;
+  margin-top: 10px;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* stop page scroll */
+}
+
+.left {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* HERO stays fixed */
+.hero-card {
+  flex-shrink: 0;
+}
+
+/* ✅ SCROLL ENABLED HERE */
+.left-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* TODAY CARDS */
+.today-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.today-card {
+  background: white;
+  border-radius: 16px;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* smooth scrollbar */
+.left-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.left-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.search-input {
+  flex: 1;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 24px;
+  border: none;
+  outline: none;
+  background: #e5e7eb;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #6b7280;
+}
+
+.search-input:focus {
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+.search-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  font-size: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.search-btn i {
+  font-size: 18px;
+}
+
+.map-box {
+  margin-top: 10px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#map {
+  height: 320px;
+  width: 100%;
+  border-radius: 18px;
+}
+
+.map-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.map-toolbar select {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.map-toolbar select:hover {
+  background: rgba(37, 99, 235, 0.85);
+}
+
+.map-toolbar select option {
+  background: #020617;
+  color: white;
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.map-header h5 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.leaflet-control-layers {
+  border-radius: 12px !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  color: white;
+  border: none;
+}
+
+.leaflet-control-layers label {
+  color: white;
+  font-size: 13px;
+}
+
+.leaflet-bar a {
+  background: rgba(15, 23, 42, 0.9) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.leaflet-bar a:hover {
+  background: #2563eb !important;
+}
+
+.leaflet-tile {
+  mix-blend-mode: screen;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile default */
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+  .chart-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .chart-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.small-card {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.small-card h6 {
+  margin-bottom: 10px;
+}
+
+.small-card canvas {
+  flex: 1;
+  max-height: 180px;
+}
+
+
+.app.panel-open .right {
+  transform: translateX(0);
+}
+
+.app.panel-open .left {
+  width: calc(100% - 360px);
+}
+
+.toggle-arrow {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 70px;
+  background: #2563eb;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.toggle-arrow span {
+  color: white;
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+.app.panel-open .toggle-arrow span {
+  transform: rotate(180deg);
+}
+
+/* ===============================
+   GLOBAL ANIMATIONS & TRANSITIONS
+================================ */
+:root {
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --panel-width: 360px;
+}
+
+/* Smooth transitions everywhere */
+.left,
+.right,
+.toggle-arrow,
+.today-card,
+.card.white,
+.search-input {
+  transition: all 0.35s var(--ease);
+}
+
+.app.panel-open .left {
+  width: calc(100% - 360px);
+}
+
+/* ===============================
+   TOGGLE ARROW (MIDDLE RIGHT)
+================================ */
+.toggle-arrow {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 70px;
+  background: #2563eb;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  box-shadow: -6px 0 16px rgba(37, 99, 235, 0.5);
+  animation: arrowPulse 2s infinite;
+}
+
+.toggle-arrow span {
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  transition: transform 0.4s var(--ease);
+}
+
+/* Rotate arrow when open */
+.app.panel-open .toggle-arrow span {
+  transform: rotate(180deg);
+}
+
+/* Pulse animation */
+@keyframes arrowPulse {
+  0% {
+    box-shadow: -6px 0 16px rgba(37, 99, 235, 0.4);
+  }
+  50% {
+    box-shadow: -10px 0 22px rgba(37, 99, 235, 0.8);
+  }
+  100% {
+    box-shadow: -6px 0 16px rgba(37, 99, 235, 0.4);
+  }
+}
+
+/* ===============================
+   SEARCH BAR INTERACTION
+================================ */
+.search-input:focus {
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.search-btn:hover {
+  transform: scale(1.1);
+}
+
+/* ===============================
+   CARD MICRO-INTERACTIONS
+================================ */
+.card.white:hover,
+.today-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ===============================
+   TODAY CARDS ANIMATION
+================================ */
+.today-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.today-card i {
+  font-size: 22px;
+  color: #2563eb;
+}
+
+.today-card .label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.today-card b {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   LEFT SCROLL SMOOTHNESS
+================================ */
+.left-scroll {
+  scroll-behavior: smooth;
+}
+
+/* ===============================
+   CHART CANVAS FIX
+================================ */
+canvas {
+  width: 100% !important;
+}
+
+/* ===============================
+   RESPONSIVE SAFETY (OPTIONAL)
+================================ */
+@media (max-width: 900px) {
+  .app.panel-open .left {
+    margin-right: 0;
+  }
+
+  .right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+  }
+}
