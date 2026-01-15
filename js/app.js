@@ -46,6 +46,8 @@ let tempComfortChart = null;
 let humidityGaugeChart = null;
 let lastInsightText = "";
 
+let isPanelOpen = false;
+
 // ==============================
 // INIT (ONLY ONE DOMContentLoaded)
 // ==============================
@@ -103,17 +105,38 @@ async function fetchWeather(city) {
     const data = await res.json();
 
     if (data.cod !== "200") throw new Error(data.message);
+    window.lastWeatherData = data;
 
     updateHero(data);
     updateTodayCards(data);
     updateRightPanel(data);
     updateCharts(data);
     initMap(data.city.coord.lat, data.city.coord.lon);
+    togglePanel(true);
   } catch (err) {
     alert("City not found");
     console.error(err);
   }
 }
+
+function showForecastUnavailable(days) {
+  const container = document.getElementById("forecastList");
+
+  container.innerHTML = `
+    <div style="
+      text-align:center;
+      padding:20px;
+      font-size:14px;
+      color:#cbd5f5;
+    ">
+      📅 ${days}-day forecast is not available<br/>
+      with the current weather data source.
+      <br/><br/>
+      <small>Coming soon 🌤️</small>
+    </div>
+  `;
+}
+
 
 async function fetchWeatherByCoords(lat, lon) {
   try {
@@ -222,6 +245,43 @@ function updateRightPanel(data) {
   document.getElementById(
     "weatherIcon"
   ).src = `https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`;
+
+  updateForecast(data);
+}
+
+document.addEventListener("click", (e) => {
+  const panel = document.getElementById("rightPanel");
+  const arrow = document.querySelector(".toggle-arrow");
+
+  if (
+    isPanelOpen &&
+    !panel.contains(e.target) &&
+    !arrow.contains(e.target)
+  ) {
+    togglePanel(false);
+  }
+});
+
+document.querySelectorAll(".tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((b) =>
+      b.classList.remove("active")
+    );
+    btn.classList.add("active");
+
+    const range = btn.dataset.range;
+    handleForecastRange(range);
+  });
+});
+
+function handleForecastRange(range) {
+  if (!window.lastWeatherData) return;
+
+  if (range === "4") {
+    updateForecast(window.lastWeatherData);
+  } else {
+    showForecastUnavailable(range);
+  }
 }
 
 // ==============================
@@ -312,9 +372,74 @@ function updateWeeklyChart(data) {
 // ==============================
 // PANEL TOGGLE
 // ==============================
-function togglePanel() {
-  document.getElementById("app").classList.toggle("panel-open");
+function togglePanel(forceState = null) {
+  const app = document.getElementById("app");
+
+  if (forceState === true) {
+    app.classList.add("panel-open");
+    isPanelOpen = true;
+  } else if (forceState === false) {
+    app.classList.remove("panel-open");
+    isPanelOpen = false;
+  } else {
+    app.classList.toggle("panel-open");
+    isPanelOpen = app.classList.contains("panel-open");
+  }
+
+  handleMapInteraction();
 }
+
+function updateForecast(data) {
+  const container = document.getElementById("forecastList");
+  container.innerHTML = "";
+
+  const daily = {};
+
+  data.list.forEach((item) => {
+    const day = new Date(item.dt * 1000).toLocaleDateString(undefined, {
+      weekday: "short",
+    });
+    if (!daily[day]) daily[day] = item;
+  });
+
+  Object.keys(daily)
+    .slice(0, 4)
+    .forEach((day) => {
+      const d = daily[day];
+      const temp = Math.round(d.main.temp);
+      const icon = d.weather[0].icon;
+
+      container.innerHTML += `
+        <div class="day">
+          <span>${day}</span>
+          <span>
+            <img src="https://openweathermap.org/img/wn/${icon}.png" width="24" />
+            ${temp}°C
+          </span>
+        </div>
+      `;
+    });
+}
+
+
+function handleMapInteraction() {
+  if (!map) return;
+
+  if (isPanelOpen) {
+    map.dragging.disable();
+    map.scrollWheelZoom.disable();
+    map.doubleClickZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+  } else {
+    map.dragging.enable();
+    map.scrollWheelZoom.enable();
+    map.doubleClickZoom.enable();
+    map.boxZoom.enable();
+    map.keyboard.enable();
+  }
+}
+
 
 function initMap(lat, lon) {
   if (!map) {

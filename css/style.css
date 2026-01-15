@@ -550,6 +550,7 @@ body {
 
 
 .app.panel-open .right {
+  pointer-events: auto;
   transform: translateX(0);
 }
 
@@ -743,6 +744,11 @@ canvas {
     top: 0;
     height: 100%;
   }
+}
+
+.app.panel-open .left {
+  filter: blur(1.5px);
+  pointer-events: none;
 }
 
 /* ===============================

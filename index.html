@@ -177,16 +177,12 @@
           <h6>Weather Forecast</h6>
 
           <div class="tabs">
-            <button class="active">4 Days</button>
-            <button>15 Days</button>
-            <button>30 Days</button>
+            <button class="tab active" data-range="4">4 Days</button>
+            <button class="tab" data-range="15">15 Days</button>
+            <button class="tab" data-range="30">30 Days</button>
           </div>
 
-          <!-- Optional: later fill dynamically -->
-          <div class="day">
-            <span>---</span>
-            <span>---</span>
-          </div>
+          <div id="forecastList"></div>
         </div>
       </div>
 
