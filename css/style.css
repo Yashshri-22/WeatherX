@@ -19,13 +19,6 @@ body {
   overflow: hidden;
 }
 
-/* LEFT */
-.left {
-  width: 100%;
-  padding: 25px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* HERO */
 .hero-card {
   height: 220px;
@@ -160,13 +153,17 @@ body {
   right: 0;
   height: 100%;
   width: 360px;
+
+  z-index: 10;
+  transform: translateX(100%);
   background: linear-gradient(180deg, #0f172a, #020617);
   color: white;
   padding: 25px;
+  overflow: hidden;
 
-  transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .current {
   text-align: center;
@@ -223,7 +220,9 @@ body {
 }
 
 .left {
-  flex: 3;
+  flex: 1;
+  width: 100%;
+  padding: 25px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -381,6 +380,7 @@ body {
   font-weight: 600;
 }
 
+
 .leaflet-control-layers {
   border-radius: 12px !important;
   background: rgba(15, 23, 42, 0.9) !important;
@@ -405,6 +405,12 @@ body {
 
 .leaflet-tile {
   mix-blend-mode: screen;
+}
+
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 2;
 }
 
 .chart-grid {
@@ -547,10 +553,6 @@ body {
   transform: translateX(0);
 }
 
-.app.panel-open .left {
-  width: calc(100% - 360px);
-}
-
 @media (max-width: 768px) {
   .right {
     width: 100%;
@@ -578,7 +580,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 100;
+  z-index: 50;
 }
 
 .toggle-arrow span {
@@ -607,10 +609,6 @@ body {
 .card.white,
 .search-input {
   transition: all 0.35s var(--ease);
-}
-
-.app.panel-open .left {
-  width: calc(100% - 360px);
 }
 
 /* ===============================
